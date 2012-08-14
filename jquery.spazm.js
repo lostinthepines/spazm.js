@@ -40,7 +40,7 @@
              'num_zoom_levels' : 5,
              'angle_index' : 0,
              'tile_width' : 512,
-             'tile_height' : 384,
+             'tile_height' : 366,
              'min_width' : 1024,
              'min_height' : 768,
              'full_width' : 5000,
@@ -104,10 +104,10 @@
            
            $(this).mousewheel(function(e,delta,deltaX,deltaY){
         	   if(deltaY > 0) {
-        		   $(this).viewer('zoom',data.zoom_level - 1);
+        		   $(this).spazm('zoom',data.zoom_level - 1);
         	   }
         	   else if(deltaY < 0) {
-        		   $(this).viewer('zoom',data.zoom_level + 1);
+        		   $(this).spazm('zoom',data.zoom_level + 1);
         	   }
            });
            
@@ -140,7 +140,7 @@
         	   }
         	   
         	   if(settings.zoom_level != targetZoomLevel) {
-        		   $(this).viewer('zoom',targetZoomLevel);
+        		   $(this).spazm('zoom',targetZoomLevel);
         	   }
            });
            
@@ -630,11 +630,11 @@
 		  if(m - 500 < lastClickTime) {
 			  if(data.zoom_level == data.num_zoom_levels) {
 			      console.log('zooming out');
-				  elem.viewer('zoom',0);
+				  elem.spazm('zoom',0);
 			  }
 			  else {
 			      console.log('zooming in to point ' + oldX + ' ' + oldY);
-				  elem.viewer('zoom',data.zoom_level + 1, oldX, oldY);
+				  elem.spazm('zoom',data.zoom_level + 1, oldX, oldY);
 			  }
 		  }
 		  lastClickTime = m; 
@@ -644,13 +644,13 @@
 	  panned = false;	  
   };
   
-  $.fn.viewer = function( method ) {
+  $.fn.spazm = function( method ) {
     if ( methods[method] ) {
       return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
     } else if ( typeof method === 'object' || ! method ) {
       return methods.init.apply( this, arguments );
     } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.viewer' );
+      $.error( 'Method ' +  method + ' does not exist on jQuery.spazm' );
     }    
   };
 

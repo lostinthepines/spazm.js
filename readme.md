@@ -12,9 +12,8 @@ The script should usually be included after the jQuery library:
 
 ## Options
 
-## Development
-
 ## Authors
 
-- Alex Peterson
 - [Nathan Bailey](ntdb)
+- [Chris Barnes](barnesy)
+- Alex Peterson

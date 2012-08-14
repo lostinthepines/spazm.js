@@ -1,0 +1,57 @@
+<!doctype html>
+	<head>
+		<!-- dependencies -->
+		<script type="text/javascript" src="lib/jquery.js"></script>
+		<script type="text/javascript" src="lib/jquery.imagesloaded.min.js"></script>
+		<script type="text/javascript" src="lib/jquery.mousewheel.min.js"></script>
+
+		<!-- the spazm.js plugin -->
+		<script type="text/javascript" src="../jquery.spazm.js"></script>
+
+		<!-- demo files -->
+		<style type="text/css">
+			body {
+				background-color: black;
+			}
+
+			#viewer { 
+				width: 512px;
+				height: 366px;
+				overflow: hidden;
+				margin: 50px auto;
+				border: 1px white dashed;
+				-webkit-transform: translateZ(0);
+			}
+
+			#viewer .loading, 
+			#viewer .visible,
+			#viewer .hotspots,
+			#viewer .angles {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			#viewer > div > img {
+				position: absolute;
+			}
+		</style>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$('#viewer').spazm({
+			    prefix: 'images/',
+			    num_images: 121,
+			    num_zoom_levels: 2,
+			    min_width:512,
+			    min_height:366,
+			    full_width:1920,
+			    full_height:1080,
+			    rotate_right: false
+			  });
+			});
+		</script>
+	</head>
+	<body>
+		<div id="viewer"></div>
+	</body>
+</html>
