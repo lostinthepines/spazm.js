@@ -53,6 +53,7 @@
           if( !data ) {
             $(this).data('viewer', settings);
             data = $this.data('viewer');
+            
             // save some info about each level size
             data.levels = getLevelSizes(data.num_zoom_levels, data.min_width, data.min_height, data.full_width, data.full_height);
 
