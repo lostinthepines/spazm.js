@@ -199,12 +199,10 @@
           var cx,cy,nx,ny;
 
           if(typeof x != "undefined" && typeof y != "undefined") {
-            console.log('SPAZM: Zooming to (' + x + ',' + y + ')');
             cx = -angle_container.offset().left + x;
             cy = -angle_container.offset().top + y;
           }
           else {
-            console.log('SPAZM: Zooming to center');
             cx = -angle_container.offset().left + (data.min_width / 2);
             cy = -angle_container.offset().top + (data.min_height / 2);
           }
@@ -278,7 +276,6 @@
             },
             complete: function() {
               // called on animation complete
-              console.log('zoom complete');
 
               // load the new tiles
               loadTilesForLevel(t);
@@ -322,6 +319,7 @@
     }
     else {
       // all done
+
       loaderDiv.fadeOut();
       loadingAngles = false;
     }
@@ -485,7 +483,7 @@
     var data = elem.data('viewer');
 
     var dx,dy;
-    if(data.zoom_level === 0) {
+    if(data.zoom_level === 0 && loadingAngles === false) {
     // rotate
       var old_angle = elem.find('.angle' + data.angle_index );
       old_angle.hide();
@@ -511,7 +509,6 @@
 
       dx = x - oldX;
       dy = y - oldY;
-      //console.log('panning pageX/Y ' + x + ' ' + y + ' ' + dx + ' ' + dy);
 
       elem.find('.visible,.angles,.loading').each(function() {
         var nx = parseFloat($(this).css('left'));
