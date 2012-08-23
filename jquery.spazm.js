@@ -21,13 +21,13 @@
   
   var methods = {
 
-		/**
-		* Initialize the plugin
-		* @param {object} options The options to initialize the plugin with.
-		* Options are:
-		* ...
-		* @return the modified jquery object
-		*/
+    /**
+    * Initialize the plugin
+    * @param {object} options The options to initialize the plugin with.
+    * Options are:
+    * ...
+    * @return the modified jquery object
+    */
       init : function( options ) {
 
         return this.each(function(){
@@ -47,7 +47,15 @@
             'format' : 'jpg',
             // Undocumented parameters (working to eliminate these altogether)
             'tile_width' : 512,
+<<<<<<< HEAD
             'tile_height' : 366,
+=======
+            'tile_height' : 384,
+            'min_width' : 1024,
+            'min_height' : 768,
+            'full_width' : 3000,
+            'full_height' : 2250,
+>>>>>>> zoom code updated
             'num_loaded' : 0,
             'levels' : [],
             'min_width' : $(this).css('width') || $(this).attr('width'),
@@ -263,19 +271,34 @@
           $(this).find('.hotspots').stop().animate({ left:nx, top:ny, width: w, height: h }, {duration: 500, queue: false, easing: 'swing' });
 
           zooming = true;
+          angle_img.css({textIndent:0});
+          var old_w = parseInt(angle_img.css('width'), 10);
+          var old_h = parseInt(angle_img.css('height'), 10);
           angle_img.stop().animate({
-            width: w,
-            height: h
+            textIndent: 100
+            //width: w,
+            //height: h
           }, {
             duration: 500,
             queue: false,
             easing: 'swing',
             step: function(now, fx) {
-              // resize the old level images
+              angle_img.css({'width':old_w + (w - old_w)*(now*0.01), 'height': old_h + (h - old_h)*(now*0.01)});
+              old_level.css('left',angle_container.css('left')).css('top',angle_container.css('top'));
+
+              old_level.find('img').each(function() {
+                var td = $(this).data('viewer');
+                if(td) {
+                  $(this).css('left',(td.sx * now) + 'px').css('width',(td.ex * now) + 'px');
+                  $(this).css('top',(td.sy * now) + 'px').css('height',(td.ey * now) + 'px');
+                }
+              });
+
+              /*
+
               var $this = $(this);
               if(fx.prop == "width") {
                 old_level.css('left',angle_container.css('left')).css('top',angle_container.css('top'));
-    
                 old_level.find('img').each(function() {
                   var td = $(this).data('viewer');
                   if(td) {
@@ -285,7 +308,6 @@
               }
               else if(fx.prop == "height") {
                 old_level.css('left',angle_container.css('left')).css('top',angle_container.css('top'));
-                        
                 old_level.find('img').each(function() {
                   var td = $(this).data('viewer');
                   if(td) {
@@ -293,6 +315,7 @@
                   }
                 });
               }
+              */
             },
             complete: function() {
               // called on animation complete
@@ -485,7 +508,7 @@
   };
   
   var mouse_down = function(e, elem, x, y) {
-	// e.preventDefault();
+  // e.preventDefault();
     panning = true;
     panned = false;
     oldX = x;
