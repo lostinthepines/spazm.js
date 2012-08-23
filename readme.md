@@ -15,35 +15,63 @@ Dependencies are limited to the [mousewheel](https://github.com/brandonaaron/jqu
 
 ## Usage
 
-Initiate a spazm.js viewer on an empty div with default options
+Because the plugin is strictly client-side it relies on a specific naming scheme for the images: 'angle_zoomlevel_x_y.format'. If you are only using the spinning functionality of spazm.js then you may name your images numerically by 'angle' (0_0_0_0.jpg, 1_0_0_0.jpg, and so forth). If not and this seems like a real pain then the [spazm.js app](http://www.spazmjs.com/app) can help.
 
-	$('#spazm_viewer').spazm();
+	0_0_0_0.jpg (the first angle, completely zoomed out, at the upper left hand corner)
+	5_1_0_2.jpg (the fifth angle, zoomed in one level, panned down 2 tile lengths)
 
-Alternatively, initiate a spazm.js viewer and pass in options
+Create an empty DIV element to contain your viewer and set its width and height.
+
+	<div id='spazm_viewer' css='width:500; height:500'></div>
+
+Initiate a spazm.js viewer on your div with only the required parameters
 
 	$('#spazm_viewer').spazm({
 		'prefix':'images/spazm_images/',
-		'zoom_level':1,
-		'num_images':36
+		'num_images':36,
+	  'full_width' : 5000,
+	  'full_height' : 3750,
+	  'num_zoom_levels' : 2
 	});
 
-## Options
+Alternatively, initiate a spazm.js viewer and pass in extra options
+
+	$('#spazm_viewer').spazm({
+		'prefix':'images/spazm_images/',
+		'num_images':36,
+	  'full_width' : 5000,
+	  'full_height' : 3750,
+	  'zoom_level' : 1,
+	  'angle_index' : 90,
+	  'rotate_right' : false,
+	  'format' : 'png'
+	});
+
+## Options (* denotes required parameters)
 
 	'prefix':'images/spazm_images/'
 
-Set the path to the images to be used with the viewer
+* The path to the images to be used with the viewer
 
 	'num_images':36
 
-Tell spazm.js how many images are in your sequence
+* Tell spazm.js how many images are in your sequence
+
+	'full_width':5000
+
+* Tell spazm.js the full (source) width of your images
+
+	'full_height':3750
+
+* Tell spazm.js the full (source) height of your images
+
+	'num_zoom_levels':2
+
+* Tell spazm.js how many zoom levels are available (set to 0 for spin only)
 
 	'zoom_level':0
 
 Set the initial zoom level, 0 is fully zoomed out
-
-	'num_zoom_levels':2
-
-Tell spazm.js how many zoom levels are available
 
 	'angle_index':0
 
@@ -52,6 +80,10 @@ Set the initial angle of the viewer
 	'rotate_right':false
 
 Flip the direction of rotation, if desired
+
+	'format':'png'
+
+Set your selected image file format if not 'jpg'
 
 ## Development
 

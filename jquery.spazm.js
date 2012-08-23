@@ -34,26 +34,47 @@
           var $this = $(this);
           var data = $this.data('viewer');
           var settings = $.extend( {
-            'prefix' : 'images/tiles/',
-            'num_images' : 1,
+            // Required parameters
+            'prefix' : null,
+            'num_images' : -1,
+            'full_width' : -1,
+            'full_height' : -1,
+            'num_zoom_levels' : -1,
+            // Optional parameters
             'zoom_level' : 0,
-            'num_zoom_levels' : 5,
             'angle_index' : 0,
+            'rotate_right' : false,
+            'format' : 'jpg',
+            // Undocumented parameters (working to eliminate these altogether)
             'tile_width' : 512,
             'tile_height' : 366,
-            'min_width' : 1024,
-            'min_height' : 768,
-            'full_width' : 5000,
-            'full_height' : 3750,
             'num_loaded' : 0,
-            'rotate_right' : true,
-            'levels' : []
+            'levels' : [],
+            'min_width' : $(this).css('width') || $(this).attr('width'),
+            'min_height' : $(this).css('height') || $(this).attr('height')
           }, options);
          
           if( !data ) {
             $(this).data('viewer', settings);
             data = $this.data('viewer');
-            
+
+            // Check for required parameters
+            var unfound = '';
+            if(!data.prefix)
+              unfound += 'prefix';
+            if(data.num_images < 0)
+              unfound += unfound.length > 0 ? ', num_images' : 'num_images';
+            if(data.full_width < 0)
+              unfound += unfound.length > 0 ? ', full_width' : 'full_width';
+            if(data.full_height < 0)
+              unfound += unfound.length > 0 ? ', full_height' : 'full_height';
+            if(data.num_zoom_levels < 0)
+              unfound += unfound.length > 0 ? ', num_zoom_levels' : 'num_zoom_levels';
+            if(unfound.length > 0) {
+              console.log('SPAZM: Please provide the following parameter(s) and try again: ' + unfound);
+              return;
+            }
+
             // save some info about each level size
             data.levels = getLevelSizes(data.num_zoom_levels, data.min_width, data.min_height, data.full_width, data.full_height);
 
@@ -62,8 +83,7 @@
            
             // angles are for panning
             txt += '<div class="angles">';
-            //txt += '<img class="angle0" src="' + settings.prefix  + '0_0_0_0.jpg" width="'+ data.min_width +'" height="'+data.min_height+'" style="display:none;" />';
-            txt += '<img class="angle0" src="' + settings.prefix  + '0_0_0_0.jpg" style="width:' + data.min_width + 'px; height:' + data.min_height + 'px" />';
+            txt += '<img class="angle0" src="' + settings.prefix  + '0_0_0_0.' + data.format + '" style="width:' + data.min_width + 'px; height:' + data.min_height + 'px" />';
             txt += '</div>';
            
             $(this).append(txt);
@@ -181,7 +201,7 @@
         return this.each( function() {
           var data = $(this).data('viewer');
 
-          if(zoom_level > data.num_zoom_levels || zoom_level < 0) return;
+          if(zoom_level > data.num_zoom_levels || zoom_level < 0 || data.num_zoom_levels === 0) return;
 
           console.log('SPAZM: Zooming to level ' + zoom_level + '/' + data.num_zoom_levels);
 
@@ -276,6 +296,7 @@
             },
             complete: function() {
               // called on animation complete
+              console.log('SPAZM: Zoom complete');
 
               // load the new tiles
               loadTilesForLevel(t);
@@ -313,7 +334,7 @@
     if(loadingImage < data.num_images) {
       var numToLoad = Math.min(4,data.num_images - loadingImage);
       for(var i = 0; i < numToLoad; i++) {
-        $(this).append('<img class="angle' + (loadingImage + i)  + '" src="' + data.prefix + (loadingImage + i) + '_0_0_0.jpg" style="display:none; width:' + data.min_width + 'px; height:' + data.min_height + 'px" />');
+        $(this).append('<img class="angle' + (loadingImage + i)  + '" src="' + data.prefix + (loadingImage + i) + '_0_0_0.' + data.format + '" style="display:none; width:' + data.min_width + 'px; height:' + data.min_height + 'px" />');
       }
       $(this).imagesLoaded(onAngleImageLoaded);
     }
@@ -330,7 +351,6 @@
     if(data.zoom_level === 0) return;
 
     var container = elem.find('.loading');
-    //container.find('img').attr('src','data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==').hide().addClass('recyclable');
     container.find('img').attr('src','').attr('id','').hide().addClass('recyclable');
 
     var x = parseInt(container.css('left'),10);
@@ -351,7 +371,7 @@
         // get a recyclable tile
         var tile = container.find('.recyclable');
         if(!tile.length) {
-          console.log('ERROR: no recyclable tile found for level ' + data.zoom_level + ' ' + ix + ' ' + iy);
+          console.log('SPAZM: ERROR! No recyclable tile found for level ' + data.zoom_level + ' ' + ix + ' ' + iy);
           break;
         }
 
@@ -372,7 +392,7 @@
           ey:(data.tile_height / h)
         });
         tile.attr('id',data.zoom_level + '_' + ix + '_' + iy);
-        tile.attr('src',data.prefix + data.angle_index + '_' + data.zoom_level + '_' + ix + '_' + iy +'.jpg');
+        tile.attr('src',data.prefix + data.angle_index + '_' + data.zoom_level + '_' + ix + '_' + iy +'.' + data.format);
         tile.css('width',tw + 'px').css('height',th + 'px');
         tile.css('left',ix * data.tile_width).css('top',iy * data.tile_height);
         tile.removeClass('recyclable');
@@ -478,13 +498,14 @@
   var mouse_move = function(e, elem, x, y) {
     e.preventDefault();
     if(!panning || zooming) return;
-      panned = true;
+    
+    panned = true;
 
     var data = elem.data('viewer');
 
     var dx,dy;
     if(data.zoom_level === 0 && loadingAngles === false) {
-    // rotate
+      // rotate
       var old_angle = elem.find('.angle' + data.angle_index );
       old_angle.hide();
 
@@ -500,10 +521,10 @@
       new_angle.show();
     }
     else {
-    // stop animating any pan
+      // stop animating any pan
       elem.find('.angles').stop();
 
-    // pan
+      // pan
       var w = data.levels[data.zoom_level].width;
       var h = data.levels[data.zoom_level].height;
 
@@ -577,7 +598,7 @@
           // get a recyclable tile
           tile = container.find('.recyclable');
           if(!tile.length) {
-            console.log('ERROR: no recyclable tile found for level ' + data.zoom_level + ' ' + ix + ' ' + iy);
+            console.log('SPAZM: ERROR! No recyclable tile found for level ' + data.zoom_level + ' ' + ix + ' ' + iy);
             break;
           }
 
@@ -599,7 +620,7 @@
             ey:(data.tile_height / h)
           });
           tile.attr('id',data.zoom_level + '_' + ix + '_' + iy);
-          tile.attr('src',data.prefix + data.angle_index + '_' + data.zoom_level + '_' + ix + '_' + iy +'.jpg');
+          tile.attr('src',data.prefix + data.angle_index + '_' + data.zoom_level + '_' + ix + '_' + iy +'.' + data.format);
           tile.css('width',tw + 'px').css('height',th + 'px');
           tile.css('left',ix * data.tile_width).css('top',iy * data.tile_height);
           tile.hide();
@@ -628,7 +649,7 @@
           elem.spazm('zoom',0);
         }
         else {
-          console.log('zooming in to point ' + oldX + ' ' + oldY);
+          console.log('SPAZM: Zooming in to point (' + oldX + ',' + oldY + ')');
           elem.spazm('zoom',data.zoom_level + 1, oldX, oldY);
         }
       }
