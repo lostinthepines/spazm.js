@@ -29,9 +29,9 @@ Initiate a spazm.js viewer on your div with only the required parameters
 	$('#spazm_viewer').spazm({
 		'prefix':'images/spazm_images/',
 		'num_images':36,
-	  'full_width' : 5000,
-	  'full_height' : 3750,
-	  'num_zoom_levels' : 2
+		'full_width' : 5000,
+		'full_height' : 3750,
+		'num_zoom_levels' : 2
 	});
 
 Alternatively, initiate a spazm.js viewer and pass in extra options
@@ -39,35 +39,35 @@ Alternatively, initiate a spazm.js viewer and pass in extra options
 	$('#spazm_viewer').spazm({
 		'prefix':'images/spazm_images/',
 		'num_images':36,
-	  'full_width' : 5000,
-	  'full_height' : 3750,
-	  'zoom_level' : 1,
-	  'angle_index' : 90,
-	  'rotate_right' : false,
-	  'format' : 'png'
+		'full_width' : 5000,
+		'full_height' : 3750,
+		'zoom_level' : 1,
+		'angle_index' : 90,
+		'rotate_right' : false,
+		'format' : 'png'
 	});
 
-## Options (* denotes required parameters)
+## Options
 
 	'prefix':'images/spazm_images/'
 
-* The path to the images to be used with the viewer
+The path to the images to be used with the viewer *
 
 	'num_images':36
 
-* Tell spazm.js how many images are in your sequence
+Tell spazm.js how many images are in your sequence *
 
 	'full_width':5000
 
-* Tell spazm.js the full (source) width of your images
+Tell spazm.js the full (source) width of your images *
 
 	'full_height':3750
 
-* Tell spazm.js the full (source) height of your images
+Tell spazm.js the full (source) height of your images *
 
 	'num_zoom_levels':2
 
-* Tell spazm.js how many zoom levels are available (set to 0 for spin only)
+Tell spazm.js how many zoom levels are available (set to 0 for spin only) *
 
 	'zoom_level':0
 
