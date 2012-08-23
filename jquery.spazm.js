@@ -47,19 +47,11 @@
             'format' : 'jpg',
             // Undocumented parameters (working to eliminate these altogether)
             'tile_width' : 512,
-<<<<<<< HEAD
-            'tile_height' : 366,
-=======
             'tile_height' : 384,
-            'min_width' : 1024,
-            'min_height' : 768,
-            'full_width' : 3000,
-            'full_height' : 2250,
->>>>>>> zoom code updated
             'num_loaded' : 0,
             'levels' : [],
-            'min_width' : $(this).css('width') || $(this).attr('width'),
-            'min_height' : $(this).css('height') || $(this).attr('height')
+            'min_width' : $(this).width(),
+            'min_height' : $(this).height()
           }, options);
          
           if( !data ) {
@@ -283,14 +275,15 @@
             queue: false,
             easing: 'swing',
             step: function(now, fx) {
-              angle_img.css({'width':old_w + (w - old_w)*(now*0.01), 'height': old_h + (h - old_h)*(now*0.01)});
+              now *= 0.01;
+              angle_img.css({'width':old_w + (w - old_w)*(now), 'height': old_h + (h - old_h)*(now)});
               old_level.css('left',angle_container.css('left')).css('top',angle_container.css('top'));
 
               old_level.find('img').each(function() {
                 var td = $(this).data('viewer');
                 if(td) {
-                  $(this).css('left',(td.sx * now) + 'px').css('width',(td.ex * now) + 'px');
-                  $(this).css('top',(td.sy * now) + 'px').css('height',(td.ey * now) + 'px');
+                  $(this).css('left',(old_w * td.sx + (w * td.sx - old_w * td.sx) * now) + 'px').css('width',(old_w * td.ex + (td.ex * w - old_w * td.ex) * now) + 'px');
+                  $(this).css('top',(old_h * td.sy + (h * td.sy - old_h * td.sy) * now) + 'px').css('height',(old_h * td.ey + (td.ey * h - old_h * td.ey) * now) + 'px');
                 }
               });
 
@@ -411,8 +404,8 @@
         tile.data('viewer',{
           sx:((ix * data.tile_width) / w),
           sy:((iy * data.tile_height) / h),
-          ex:(data.tile_width / w),
-          ey:(data.tile_height / h)
+          ex:(tw / w),
+          ey:(th / h)
         });
         tile.attr('id',data.zoom_level + '_' + ix + '_' + iy);
         tile.attr('src',data.prefix + data.angle_index + '_' + data.zoom_level + '_' + ix + '_' + iy +'.' + data.format);
@@ -639,8 +632,8 @@
           tile.data('viewer',{
             sx:((ix * data.tile_width) / w),
             sy:((iy * data.tile_height) / h),
-            ex:(data.tile_width / w),
-            ey:(data.tile_height / h)
+            ex:(tw / w),
+            ey:(th / h)
           });
           tile.attr('id',data.zoom_level + '_' + ix + '_' + iy);
           tile.attr('src',data.prefix + data.angle_index + '_' + data.zoom_level + '_' + ix + '_' + iy +'.' + data.format);
