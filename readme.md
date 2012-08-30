@@ -22,7 +22,7 @@ Because the plugin is strictly client-side it relies on a specific naming scheme
 
 Create an empty DIV element to contain your viewer and set its width and height.
 
-	<div id='spazm_viewer' css='width:500; height:500'></div>
+	<div id='spazm_viewer' style='width:500; height:500'></div>
 
 Initiate a spazm.js viewer on your div with only the required parameters
 
@@ -84,6 +84,10 @@ Flip the direction of rotation, if desired
 	'format':'png'
 
 Set your selected image file format if not 'jpg'
+
+	'debug':'true'
+
+If true spazm.js will provide more console feedback
 
 ## Development
 

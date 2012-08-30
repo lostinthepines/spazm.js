@@ -45,7 +45,10 @@
             'angle_index' : 0,
             'rotate_right' : false,
             'format' : 'jpg',
-            // Undocumented parameters (working to eliminate these altogether)
+            'debug' : false,
+            // Undocumented (works in progress)
+            'resizable' : false,
+            // Undocumented (trying to eliminate)
             'tile_width' : 512,
             'tile_height' : 384,
             'num_loaded' : 0,
@@ -83,7 +86,7 @@
            
             // angles are for panning
             txt += '<div class="angles">';
-            txt += '<img class="angle0" src="' + settings.prefix  + '0_0_0_0.' + data.format + '" style="width:' + data.min_width + 'px; height:' + data.min_height + 'px" />';
+            txt += '<img class="angle0" src="' + settings.prefix  + '0_0_0_0.' + data.format + '" style="width:' + data.min_width + 'px; height:' + data.min_height + 'px;" />';
             txt += '</div>';
            
             $(this).append(txt);
@@ -102,6 +105,11 @@
             for(var t = 0; t < num_tiles; t++) {
               $(this).find('.visible,.loading').append('<img src="" class="recyclable" />');
             }
+
+            // apply necessary styling
+            $(this).css('overflow','hidden').css('cursor','move');
+            $(this).children().css('position','absolute').css('top','0').css('left','0').css('width','10000px').css('height','10000px');
+            $(this).find('img').css('position','absolute');
 
             // loading bar
             $(this).append('<div class="loader"><div class="bar_empty"><div class="bar"></div></div></div>');
@@ -203,7 +211,7 @@
 
           if(zoom_level > data.num_zoom_levels || zoom_level < 0 || data.num_zoom_levels === 0) return;
 
-          console.log('SPAZM: Zooming to level ' + zoom_level + '/' + data.num_zoom_levels);
+          if(data.debug) console.log('SPAZM: Zooming to level ' + zoom_level + '/' + data.num_zoom_levels);
 
           var cur_level = data.zoom_level;
           var delta = zoom_level - cur_level;
@@ -312,7 +320,7 @@
             },
             complete: function() {
               // called on animation complete
-              console.log('SPAZM: Zoom complete');
+              if(data.debug) console.log('SPAZM: Zoom complete');
 
               // load the new tiles
               loadTilesForLevel(t);
@@ -501,7 +509,7 @@
   };
   
   var mouse_down = function(e, elem, x, y) {
-  // e.preventDefault();
+    e.preventDefault();
     panning = true;
     panned = false;
     oldX = x;
@@ -533,7 +541,7 @@
       data.angle_index = (startAngle + dx) % data.num_images;
       if(data.angle_index < 0) data.angle_index += data.num_images;
 
-      var new_angle =elem.find('.angle' + data.angle_index );
+      var new_angle =elem.find('.angle' + data.angle_index);
       new_angle.show();
     }
     else {
@@ -661,11 +669,11 @@
       // double click
       if(m - 500 < lastClickTime) {
         if(data.zoom_level == data.num_zoom_levels) {
-          console.log('SPAZM: Zooming out');
+          if(data.debug) console.log('SPAZM: Zooming out');
           elem.spazm('zoom',0);
         }
         else {
-          console.log('SPAZM: Zooming in to point (' + oldX + ',' + oldY + ')');
+          if(data.debug) console.log('SPAZM: Zooming in to point (' + oldX + ',' + oldY + ')');
           elem.spazm('zoom',data.zoom_level + 1, oldX, oldY);
         }
       }
